@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Cleartext HTTP is allowed only to the Bedrock proxy's host, never
+  generally. On a real Fire TV Stick this would be the household's own
+  network device running server/bedrock_proxy.py, not the emulator's
+  10.0.2.2 loopback alias, and would still need to be a specific,
+  narrowly scoped host, not a blanket cleartext allowance. See
+  BedrockIntentResolver.kt and SPEC.md for the limits of this approach.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>
+    </domain-config>
+</network-security-config>

@@ -1,0 +1,6 @@
+<resources>
+    <style name="Theme.SimpleMode" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/charcoal</item>
+        <item name="android:colorBackground">@color/charcoal</item>
+    </style>
+</resources>

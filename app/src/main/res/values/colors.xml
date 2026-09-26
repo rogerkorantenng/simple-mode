@@ -1,0 +1,12 @@
+<resources>
+    <!-- Warm charcoal ground, fern-green accent at two tints, cream text.
+         Chosen deliberately narrow: one hue family, not several, because a
+         low-vision viewer three metres from the screen is better served by
+         fewer competing colours, not more. See SPEC.md "Visual direction". -->
+    <color name="charcoal">#1C1A17</color>
+    <color name="charcoal_elevated">#2A2620</color>
+    <color name="fern">#4F7A52</color>
+    <color name="fern_bright">#8FBF83</color>
+    <color name="cream">#FBF3E7</color>
+    <color name="cream_muted">#C9C0B2</color>
+</resources>

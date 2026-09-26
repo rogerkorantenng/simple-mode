@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Fire TV / Android TV form factor. required="false" so the same build also
+         installs on a phone-shaped emulator, since this machine has no working
+         Android TV system image (see friction log). A real submission would set
+         this true. -->
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
+    <!-- Draws the floating "back to Simple Mode" button over whatever app the
+         viewer has wandered into. Not a signature-level permission: the caregiver
+         grants it once, from Settings, during setup. -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Needed for "Tell Me" to reach the Bedrock proxy described in
+         server/bedrock_proxy.py; see BedrockIntentResolver.kt. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- SimpleModeApp exists only to count resumed activities from process start,
+         so the recovery overlay knows whether Simple Mode is in front without
+         asking Fire OS (and without PACKAGE_USAGE_STATS). See
+         recovery/ForegroundWatcher.kt and FRICTION.md. -->
+    <application
+        android:name=".SimpleModeApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:banner="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.SimpleMode"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:supportsRtl="true">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:resizeableActivity="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+            <!-- Best-effort HOME registration: see friction log. Fire TV's own
+                 launcher does honour this third-party HOME intent-filter, confirmed
+                 on a real Fire TV; the app still never depends on it working. -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".recovery.RecoveryOverlayService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Persistent on-screen button that returns a low-vision or low-dexterity viewer to the Simple Mode home screen from any app." />
+        </service>
+
+        <!-- Best-effort restart after reboot. Amazon's Fire TV docs document no
+             launch-on-boot API at all (verified 404 on /docs/fire-tv/launch-on-boot.html,
+             see internal research into Fire TV's own documentation). RECEIVE_BOOT_COMPLETED is
+             plain Android, not Fire-TV-specific, and OEM autostart restrictions on
+             other Android skins are common. Treat this receiver as a bonus, never
+             the promise. -->
+        <receiver
+            android:name=".recovery.BootReceiver"
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+</manifest>

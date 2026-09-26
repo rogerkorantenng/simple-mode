@@ -1,0 +1,9 @@
+# The intent proxy in bedrock_proxy.py is standard library only -- http.server
+# for the socket, subprocess for the model call. It shells out to the AWS CLI
+# (`aws bedrock-runtime converse`) rather than linking boto3, so the CLI is the
+# real dependency and this is how to get it into the same virtualenv.
+#
+# awscli 1.x is what PyPI carries; AWS CLI v2 is distributed as an installer,
+# not a wheel. Either one serves `bedrock-runtime converse`. If `aws` is already
+# on your PATH and configured, you do not need this file at all.
+awscli>=1.40
